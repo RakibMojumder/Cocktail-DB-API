@@ -25,13 +25,20 @@ const displayCocktailData = (datas, dataLimit) => {
     const showAll = document.getElementById('show-all')
     if (datas === null) {
         showAll.classList.add('d-none');
+        const footer = document.getElementById('footer');
+        footer.classList.add('footer-style');
+        // footer.style.position = 'fixed';
+        // footer.style.bottom = '0';
+        // footer.style.width = '100%';
         return;
     }
     else if (dataLimit && datas.length > 8) {
         datas = datas.slice(0, 8);
         showAll.classList.remove('d-none');
+        footer.classList.remove('footer-style');
     } else {
         showAll.classList.add('d-none');
+        footer.classList.remove('footer-style');
     }
 
     datas.forEach(data => {
@@ -44,7 +51,7 @@ const displayCocktailData = (datas, dataLimit) => {
             <div class="card-body">
                 <h5 class="card-title">${data.strDrink}</h5>
                 <p class="card-text">${data.strInstructions.length > 40 ? data.strInstructions.slice(0, 40) + '...' : data.strInstructions + ' Lorem ipsum dolor sit.'}</p>
-                <button class="btn btn-outline-success">Show Details</button>
+                <button onclick="showDetailsFetchData(${data.idDrink})" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Show Details</button>
             </div>
         </div>
         `;
@@ -84,6 +91,24 @@ const loadSpinner = (isLoading) => {
 // show all btn
 document.getElementById('show-all-btn').addEventListener('click', () => {
     callFetchCocktailData();
-})
+});
 
-// fetchCocktailData('Margarita')
+
+// fetch phone details data
+const showDetailsFetchData = async (id) => {
+    const res = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
+    const result = await res.json()
+    showDetails(result.drinks[0]);
+}
+
+
+// show phone details
+const showDetails = (details) => {
+    console.log(details);
+    document.getElementById('modal-title').innerText = details.strDrink;
+    const modalBody = document.getElementById('modal-body');
+
+}
+
+
+fetchCocktailData('')
